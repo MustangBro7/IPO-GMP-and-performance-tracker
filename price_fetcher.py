@@ -12,7 +12,7 @@ def fetch_stock(symbol):
         current_price = data["Close"][-1]
         print(current_price)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print("Symbol not found.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

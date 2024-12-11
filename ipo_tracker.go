@@ -42,7 +42,7 @@ var (
 )
 
 // Function to scrape and display data as a table
-func gmp(url string, targetColumns []int) ([]string, [][]string) {
+func gmp(url string, targetColumns []int, reqType string) ([]string, [][]string) {
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -64,7 +64,7 @@ func gmp(url string, targetColumns []int) ([]string, [][]string) {
 	var headData []string
 	var tickerData []string
 	// var ipos_now [][]string
-	bracketRegex := regexp.MustCompile(`\(([^,]+)`)
+	bracketRegex := regexp.MustCompile(`\(([^,)]+)`)
 	doc.Find("table tr").Each(func(i int, row *goquery.Selection) {
 		var rowData []string
 		for _, colIndex := range targetColumns {
@@ -74,6 +74,7 @@ func gmp(url string, targetColumns []int) ([]string, [][]string) {
 				col1 = strings.ReplaceAll(col1, "₹", "")
 				col1 = strings.TrimSpace(col1)
 				col1 = strings.ReplaceAll(col1, "[email protected]", "")
+				// col1 = strings.ReplaceAll(col1, ")", "")
 				rowData = append(rowData, strings.TrimSpace(col1))
 
 			} else {
@@ -107,9 +108,12 @@ func gmp(url string, targetColumns []int) ([]string, [][]string) {
 			data[i] = ticker
 		}
 	}
-
-	tickerResult := fetchPrices(tickerData)
-
+	var tickerResult map[string]string
+	if reqType == "main" {
+		tickerResult = fetchPrices(tickerData)
+	} else {
+		tickerResult = fetchSMEPrices(tickerData)
+	}
 	doc.Find("table.table-bordered.table-striped.table-hover.w-auto").Each(func(i int, table *goquery.Selection) { // Replace 'class-name' with your target table's class
 
 		table.Find("thead").Each(func(i int, row *goquery.Selection) {
@@ -135,11 +139,14 @@ func gmp(url string, targetColumns []int) ([]string, [][]string) {
 		}
 		curprice := strings.TrimSpace(value[4])
 		currentPrice, err := strconv.ParseFloat(curprice, 64)
-		if err != nil {
-			fmt.Println("Error:", err)
-		}
 		pl := currentPrice - listPrice
 		percentage := (pl / listPrice) * 100
+		if err != nil {
+			fmt.Println("Error:", err)
+			pl = 0.0
+			percentage = 0.0
+		}
+
 		out := fmt.Sprintf("%f (%.2f%%)\n", pl, percentage)
 		// println(out)
 		value = append(value, out)
@@ -150,12 +157,12 @@ func gmp(url string, targetColumns []int) ([]string, [][]string) {
 }
 
 func main() {
-	headers, rows := upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 9})
+	headers, rows := upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 10})
 	renderrrr(headers, rows)
-	headers, rows = gmp("https://www.investorgain.com/report/ipo-performance-history/486/ipo/", []int{0, 5, 6, 8})
-	headers[4], headers[3] = "Current Price", "Listing Gains"
+	headers, rows = gmp("https://www.investorgain.com/report/ipo-performance-history/486/ipo/", []int{0, 5, 6, 8}, "main")
 	renderrrr(headers, rows)
-
+	headers, rows = gmp("https://www.investorgain.com/report/ipo-performance-history/486/sme/", []int{0, 5, 6, 8}, "sme")
+	renderrrr(headers, rows)
 }
 
 func renderrrr(headers []string, rows [][]string) {
@@ -230,9 +237,8 @@ func getData(symbol string) string {
 	}
 
 	return out.String()
-	// Print the raw output
-
 }
+
 func fetchPrices(symbols []string) map[string]string {
 	// Using a WaitGroup to wait for all goroutines to complete
 	var wg sync.WaitGroup
@@ -244,6 +250,27 @@ func fetchPrices(symbols []string) map[string]string {
 		go func(s string) {
 			defer wg.Done()
 			price := getData(s) // Fetch price for the symbol
+			mu.Lock()
+			results[s] = price
+			mu.Unlock()
+		}(symbol)
+	}
+
+	wg.Wait()
+	return results
+}
+
+func fetchSMEPrices(symbols []string) map[string]string {
+	// Using a WaitGroup to wait for all goroutines to complete
+	var wg sync.WaitGroup
+	results := make(map[string]string)
+	mu := &sync.Mutex{} // Mutex to safely write to the shared map
+
+	for _, symbol := range symbols {
+		wg.Add(1)
+		go func(s string) {
+			defer wg.Done()
+			price := getSMEData(s) // Fetch price for the symbol
 			mu.Lock()
 			results[s] = price
 			mu.Unlock()
@@ -310,4 +337,19 @@ func upcoming(url string, targetColumns []int) ([]string, [][]string) {
 	})
 
 	return headData, data
+}
+
+func getSMEData(symbol string) string {
+	cmd := exec.Command("python3", "sme_fetcher.py", symbol)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("Error running Python script:", err)
+		return err.Error()
+	}
+
+	return out.String()
+	// Print the raw output
+
 }
