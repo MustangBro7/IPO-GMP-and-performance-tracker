@@ -1,6 +1,13 @@
 import sys
 import yfinance as yf
 import json
+import os
+
+def activate_virtualenv():
+    # Modify this path to point to your virtual environment's activation script
+    venv_activate_path = "~/myenv/bin/activate_this.py"
+    with open(venv_activate_path) as f:
+        exec(f.read(), {'__file__': venv_activate_path})
 
 def fetch_stock(symbol):
     try:
@@ -15,6 +22,8 @@ def fetch_stock(symbol):
         print("Symbol not found.")
 
 if __name__ == "__main__":
+    # activate_virtualenv()
+    
     if len(sys.argv) < 2:
         print(json.dumps({"error": "Stock symbol is required"}))
         sys.exit(1)

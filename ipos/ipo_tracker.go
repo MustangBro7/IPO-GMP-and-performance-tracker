@@ -1,4 +1,4 @@
-package main
+package ipo_tracker
 
 import (
 	"bytes"
@@ -32,17 +32,10 @@ var (
 			Foreground(lipgloss.Color("#ABB2BF")). // Light gray for alternate rows
 			Padding(0, 2)                          // Padding for row spacing
 
-	// Border Style: Glowing Rounded Borders
-	borderStyle = lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("#FF00FF")). // Neon magenta border
-			Padding(1, 2).                               // Padding inside the table
-			Background(lipgloss.Color("#000000"))        // Black background for modern effect
-
 )
 
 // Function to scrape and display data as a table
-func gmp(url string, targetColumns []int, reqType string) ([]string, [][]string) {
+func GetGMP(url string, targetColumns []int, reqType string) ([]string, [][]string) {
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -108,6 +101,9 @@ func gmp(url string, targetColumns []int, reqType string) ([]string, [][]string)
 			data[i] = ticker
 		}
 	}
+	// for _, i := range data {
+	// 	fmt.Println(&i)
+	// }
 	var tickerResult map[string]string
 	if reqType == "main" {
 		tickerResult = fetchPrices(tickerData)
@@ -156,16 +152,7 @@ func gmp(url string, targetColumns []int, reqType string) ([]string, [][]string)
 	return headData, data
 }
 
-func main() {
-	headers, rows := upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 10})
-	renderrrr(headers, rows)
-	headers, rows = gmp("https://www.investorgain.com/report/ipo-performance-history/486/ipo/", []int{0, 5, 6, 8}, "main")
-	renderrrr(headers, rows)
-	headers, rows = gmp("https://www.investorgain.com/report/ipo-performance-history/486/sme/", []int{0, 5, 6, 8}, "sme")
-	renderrrr(headers, rows)
-}
-
-func renderrrr(headers []string, rows [][]string) {
+func Render(headers []string, rows [][]string) {
 	// rows = rows[1:] // Skip the first row if needed
 
 	t := table.New().
@@ -212,7 +199,7 @@ func renderrrr(headers []string, rows [][]string) {
 }
 
 func extractPercentage(content string) int {
-	// Example: "169 (14.97%)"
+
 	start := strings.LastIndex(content, "(")
 	end := strings.LastIndex(content, "%")
 	if start != -1 && end != -1 && end > start {
@@ -223,11 +210,14 @@ func extractPercentage(content string) int {
 			return int(percentage)
 		}
 	}
-	return 0 // Default to 0 if no valid percentage is found
+	return 0
 }
 
 func getData(symbol string) string {
-	cmd := exec.Command("python3", "price_fetcher.py", symbol)
+	// cmd = exec.Command("source", "~/myenv/bin/activate")
+	println("Executing price fetcher")
+	scriptPath := "/Volumes/X10 Pro/projects/ipo_tracker/ipos/price_fetcher.py"
+	cmd := exec.Command("/Users/abhinavmohan/myenv/bin/python3", scriptPath, symbol)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
@@ -281,7 +271,7 @@ func fetchSMEPrices(symbols []string) map[string]string {
 	return results
 }
 
-func upcoming(url string, targetColumns []int) ([]string, [][]string) {
+func Upcoming(url string, targetColumns []int) ([]string, [][]string) {
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -322,7 +312,7 @@ func upcoming(url string, targetColumns []int) ([]string, [][]string) {
 	if len(data) > 16 {
 		data = data[:16]
 	}
-	doc.Find("table.table-bordered.table-striped.table-hover.w-auto").Each(func(i int, table *goquery.Selection) { // Replace 'class-name' with your target table's class
+	doc.Find("table.table-bordered.table-striped.table-hover.w-auto").Each(func(i int, table *goquery.Selection) {
 
 		table.Find("thead").Each(func(i int, row *goquery.Selection) {
 			for _, colIndex := range targetColumns {
@@ -340,7 +330,8 @@ func upcoming(url string, targetColumns []int) ([]string, [][]string) {
 }
 
 func getSMEData(symbol string) string {
-	cmd := exec.Command("python3", "sme_fetcher.py", symbol)
+	scriptPath := "/Volumes/X10 Pro/projects/ipo_tracker/ipos/sme_fetcher.py"
+	cmd := exec.Command("/Users/abhinavmohan/myenv/bin/python3", scriptPath, symbol)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
@@ -350,6 +341,5 @@ func getSMEData(symbol string) string {
 	}
 
 	return out.String()
-	// Print the raw output
 
 }
