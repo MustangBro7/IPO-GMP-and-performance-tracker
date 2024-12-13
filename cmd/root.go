@@ -40,6 +40,8 @@ var upcomingCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		headers, rows := ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 10})
 		ipo_tracker.Render(headers, rows)
+		headers, rows = ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/close/", []int{0, 1, 2, 3, 7, 8, 10})
+		ipo_tracker.Render(headers, rows)
 	},
 }
 
