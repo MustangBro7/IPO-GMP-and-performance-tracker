@@ -214,8 +214,7 @@ func extractPercentage(content string) int {
 }
 
 func getData(symbol string) string {
-	// cmd = exec.Command("source", "~/myenv/bin/activate")
-	println("Executing price fetcher")
+
 	scriptPath := "/Volumes/X10 Pro/projects/ipo_tracker/ipos/price_fetcher.py"
 	cmd := exec.Command("/Users/abhinavmohan/myenv/bin/python3", scriptPath, symbol)
 	var out bytes.Buffer

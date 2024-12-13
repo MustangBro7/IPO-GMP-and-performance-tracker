@@ -5,8 +5,8 @@ IPO Tracker CLI is a command-line tool designed to fetch and display IPO-related
 
 ## Features
 - Fetch upcoming IPO data
-- Fetch Main GMP IPO data
-- Fetch SME GMP IPO data
+- Track performance of recently listed Mainboard IPOs
+- Track performance of recently listed SME IPOs
 
 ## Prerequisites
 1. Install [Go](https://go.dev/doc/install).
@@ -20,7 +20,7 @@ IPO Tracker CLI is a command-line tool designed to fetch and display IPO-related
 git clone https://github.com/your-repo/ipo_tracker.git
 cd ipo_tracker
 ```
-
+#### Note: You will have to modify all the paths so that they work on your system
 ### 2. Python Virtual Environment
 Create and activate a Python virtual environment:
 ```bash
@@ -51,15 +51,17 @@ Use the following commands to interact with the CLI:
   ```bash
   ipo_tracker upcoming
   ```
+  ![alt text](image.png)
 - **Fetch Main GMP Data**:
   ```bash
   ipo_tracker main
   ```
+  ![alt text](image-1.png)
 - **Fetch SME GMP Data**:
   ```bash
   ipo_tracker sme
   ```
-
+  ![alt text](image-2.png)
 ## Project Structure
 ```
 ipo_tracker/
