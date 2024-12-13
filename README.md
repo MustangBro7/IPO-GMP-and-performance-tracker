@@ -67,7 +67,7 @@ ipo_tracker/
 ├── ipos/                    # Python scripts for data fetching
 │   ├── price_fetcher.py     # Fetch stock prices using yfinance
 │   ├── sme_fetcher.py       # Fetch SME data
-│   ├── ipo_tracker.go       # Fetch SME data
+│   ├── ipo_tracker.go       # Ipo Tracking functions
 ├── main.go                  # Entry point for the Go CLI
 ├── README.md                # Project documentation
 ├── requirements.txt         # Python dependencies
@@ -86,7 +86,8 @@ ipo_tracker/
   - Confirm the Go binary path is added to the `PATH` environment variable.
 
 ## Author
-Your Abhinav Mohan 
+Abhinav Mohan  
+
 Email: abhinavmohan12@gmail.com
 
 ## License
