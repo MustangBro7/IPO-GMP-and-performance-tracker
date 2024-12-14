@@ -51,7 +51,7 @@ Use the following commands to interact with the CLI:
   ```bash
   ipo_tracker upcoming
   ```
-  ![alt text](image.png)
+![alt text](image-3.png)
 - **Fetch Main GMP Data**:
   ```bash
   ipo_tracker main

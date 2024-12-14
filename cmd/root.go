@@ -6,6 +6,7 @@ import (
 
 	ipo_tracker "ipo_tracker/ipos"
 
+	"github.com/mbndr/figlet4go"
 	"github.com/spf13/cobra"
 )
 
@@ -38,8 +39,22 @@ var upcomingCmd = &cobra.Command{
 	Use:   "upcoming",
 	Short: "Fetch upcoming IPO data",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		ascii := figlet4go.NewAsciiRender()
+
+		// Adding the colors to RenderOptions
+		options := figlet4go.NewRenderOptions()
+		options.FontColor = []figlet4go.Color{
+			// Colors can be given by default ansi color codes...
+			figlet4go.ColorGreen,
+		}
+
+		renderStr, _ := ascii.RenderOpts("Upcoming", options)
+		fmt.Print(renderStr)
 		headers, rows := ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 10})
 		ipo_tracker.Render(headers, rows)
+		renderStr, _ = ascii.RenderOpts("Closed", options)
+		fmt.Print(renderStr)
 		headers, rows = ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/close/", []int{0, 1, 2, 3, 7, 8, 10})
 		ipo_tracker.Render(headers, rows)
 	},
