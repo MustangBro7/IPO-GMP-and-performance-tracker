@@ -29,6 +29,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// if err := json.NewEncoder(w).Encode(headers); err != nil {
 	// 	http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	// }
+	// data := map[string]interface{}{
+	// 	"headers": headers,
+	// 	"rows":    rows,
+	// }
 	if err := json.NewEncoder(w).Encode(rows); err != nil {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}
