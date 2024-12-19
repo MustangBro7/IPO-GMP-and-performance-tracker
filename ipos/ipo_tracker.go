@@ -101,9 +101,6 @@ func GetGMP(url string, targetColumns []int, reqType string) ([]string, [][]stri
 			data[i] = ticker
 		}
 	}
-	// for _, i := range data {
-	// 	fmt.Println(&i)
-	// }
 	var tickerResult map[string]string
 	if reqType == "main" {
 		tickerResult = fetchPrices(tickerData)
@@ -124,6 +121,7 @@ func GetGMP(url string, targetColumns []int, reqType string) ([]string, [][]stri
 		})
 	})
 	headData = append(headData[:0], append([]string{"Ticker"}, headData[0:]...)...)
+
 	for _, value := range data {
 		value[4] = tickerResult[value[0]]
 	}
@@ -147,6 +145,36 @@ func GetGMP(url string, targetColumns []int, reqType string) ([]string, [][]stri
 		// println(out)
 		value = append(value, out)
 		data[i] = value
+	}
+	headData = append(headData, "List Price")
+	headData = append(headData, "Profit/Loss since Listing")
+	for i, lp := range data {
+		// fmt.Println(&i
+		ipoprice, err := strconv.ParseFloat(lp[2], 64)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+		// gain := extractPercentage(lp[3])
+		// println(gain)
+		listprice := ipoprice + (extractPercentage(lp[3]) / 100 * ipoprice)
+		stringlp := strconv.FormatFloat(listprice, 'f', -1, 64)
+		cp := strings.TrimSpace(lp[4])
+		curprice, err := strconv.ParseFloat(cp, 64)
+		profitsinceList := curprice - listprice
+		percentage := (profitsinceList / listprice) * 100
+		if err != nil {
+			fmt.Println("Error:", err)
+			profitsinceList = 0.0
+			percentage = 0.0
+		}
+		lp = append(lp, stringlp)
+		// lp = append(lp[:4], append([]string{strconv.FormatFloat(listprice, 'f', -1, 64)}, lp[4:]...)...)
+		// lp = append(lp[:3], append([]string{stringlp}, lp[3:]...)...)
+
+		out := fmt.Sprintf("%f (%.2f%%)\n", profitsinceList, percentage)
+		lp = append(lp, out)
+		// println(&lp)
+		data[i] = lp
 	}
 	headData[4], headData[3] = "Current Price", "Listing Gains"
 	return headData, data
@@ -198,7 +226,7 @@ func Render(headers []string, rows [][]string) {
 	fmt.Println(t)
 }
 
-func extractPercentage(content string) int {
+func extractPercentage(content string) float64 {
 
 	start := strings.LastIndex(content, "(")
 	end := strings.LastIndex(content, "%")
@@ -207,7 +235,7 @@ func extractPercentage(content string) int {
 		percentageStr = strings.ReplaceAll(percentageStr, ",", "") // Handle commas
 		percentage, err := strconv.ParseFloat(percentageStr, 64)
 		if err == nil {
-			return int(percentage)
+			return float64(percentage)
 		}
 	}
 	return 0
