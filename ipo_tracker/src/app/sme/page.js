@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const extractPercentage = (content) => {
   const start = content.lastIndexOf("(");
@@ -15,30 +16,68 @@ const extractPercentage = (content) => {
 };
 
 const MyPage = () => {
-  const [data, setData] = useState(null); 
+  const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Added loading state
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/sme");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError(err.message);
+  const fetchData = async () => {
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch("http://0.0.0.0:8080/sme");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-
-    fetchData();
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+  const loadingFunc = () =>{
+    setLoading(true)
+  }
+  useEffect(() => {
+    fetchData(); // Fetch data on component load
   }, []);
 
   return (
     <div className="p-20">
-      <h1 className="text-2xl font-bold mb-4">SME IPO Performace Table</h1>
+      {/* Navigation Buttons */}
+      <div>
+        <Link href="/">
+          <button 
+        onClick={loadingFunc}
+          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600">
+          <h1 className="text-2xl font-bold mb-4">Upcoming</h1>
+          </button>
+        </Link>
+        <Link href="/main">
+          <button 
+          onClick={loadingFunc}
+          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600">
+          <h1 className="text-2xl font-bold mb-4">Main</h1>
+          </button>
+        </Link>
+        <Link href="/sme">
+          <button 
+            onClick={loadingFunc}
+          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600 outline rounded-b-none  outline-1">
+          <h1 className="text-2xl font-bold mb-4 ">SME IPO Performace Table</h1>
+          </button>
+        </Link>
+        </div>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="w-16 h-16 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>
+        </div>
+      )}
+
+      {/* Main Content */}
       <div className="overflow-x-auto">
         {error ? (
           <p className="text-red-500">Error: {error}</p>
@@ -91,10 +130,7 @@ const MyPage = () => {
                       }
                     }
                     return (
-                      <td
-                        key={cellIndex}
-                        className="border border-gray-300 px-4 py-2"
-                      >
+                      <td key={cellIndex} className="border border-gray-300 px-4 py-2">
                         {cell}
                       </td>
                     );
