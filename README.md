@@ -17,7 +17,7 @@ IPO Tracker CLI is a command-line tool designed to fetch and display IPO-related
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-repo/ipo_tracker.git
+git clone [https://github.com/your-repo/ipo_tracker.git](https://github.com/MustangBro7/IPO-GMP-and-performance-tracker.git)
 cd ipo_tracker
 ```
 #### Note: You will have to modify all the paths so that they work on your system
