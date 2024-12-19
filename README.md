@@ -56,12 +56,12 @@ Use the following commands to interact with the CLI:
   ```bash
   ipo_tracker main
   ```
-  ![alt text](image-1.png)
+  ![alt text](image-4.png)
 - **Fetch SME GMP Data**:
   ```bash
   ipo_tracker sme
   ```
-  ![alt text](image-2.png)
+  ![alt text](image-5.png)
 ## Project Structure
 ```
 ipo_tracker/
