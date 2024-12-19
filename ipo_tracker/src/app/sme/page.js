@@ -21,7 +21,7 @@ const MyPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/data");
+        const response = await fetch("http://localhost:8080/sme");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -38,7 +38,7 @@ const MyPage = () => {
 
   return (
     <div className="p-20">
-      <h1 className="text-2xl font-bold mb-4">IPO Table</h1>
+      <h1 className="text-2xl font-bold mb-4">SME IPO Performace Table</h1>
       <div className="overflow-x-auto">
         {error ? (
           <p className="text-red-500">Error: {error}</p>
