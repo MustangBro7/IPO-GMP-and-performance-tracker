@@ -16,8 +16,11 @@ func upcominghandler(w http.ResponseWriter, r *http.Request) {
 
 	// headers, rows := ipo_tracker.GetGMP("https://www.investorgain.com/report/ipo-performance-history/486/ipo/", []int{0, 5, 6, 8}, "main")
 	headers, rows := ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/current/", []int{0, 1, 2, 3, 7, 8, 10})
+	_, rows1 := ipo_tracker.Upcoming("https://www.investorgain.com/report/live-ipo-gmp/331/close/", []int{0, 1, 2, 3, 7, 8, 10})
 	fmt.Println(headers)
-	fmt.Println(rows)
+	// fmt.Println(rows)
+	rows = append(rows, rows1...)
+	println(rows)
 	w.Header().Set("Access-Control-Allow-Origin", "*") // Allow requests only from your React app
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")                       // Allow specific methods
