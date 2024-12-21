@@ -18,14 +18,13 @@ const extractPercentage = (content) => {
 const MyPage = () => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    console.log(apiUrl)
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/data`,{
+      const response = await fetch(`${apiUrl}/data`, {
         method: "GET",
         headers: {
           "ngrok-skip-browser-warning": "true",
@@ -40,18 +39,20 @@ const MyPage = () => {
       console.error("Error fetching data:", err);
       setError(err.message);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
-  const loadingFunc = () =>{
-    setLoading(true)
-  }
+
+  const loadingFunc = () => {
+    setLoading(true);
+  };
+
   useEffect(() => {
-    fetchData(); // Fetch data on component load
+    fetchData();
   }, []);
 
   return (
-    <div className="p-20">
+    <div className="p-4 sm:p-8">
       {/* Navigation Buttons */}
       <div>
         <Link href="/">
@@ -89,11 +90,14 @@ const MyPage = () => {
         {error ? (
           <p className="text-red-500">Error: {error}</p>
         ) : data ? (
-          <table className="table-auto border-collapse border border-gray-300 w-full text-left">
+          <table className="table-auto border-collapse border border-gray-300 w-full text-left sm:table-fixed">
             <thead>
               <tr>
                 {data.headers.map((header, index) => (
-                  <th key={index} className="border border-gray-300 px-4 py-2 font-bold">
+                  <th
+                    key={index}
+                    className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 font-bold text-xs sm:text-sm"
+                  >
                     {header}
                   </th>
                 ))}
@@ -108,7 +112,7 @@ const MyPage = () => {
                         return (
                           <td
                             key={cellIndex}
-                            className="border border-gray-300 px-4 py-2 bg-yellow-200 dark:bg-purple-700"
+                            className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 bg-yellow-200 dark:bg-purple-700 text-xs sm:text-sm"
                           >
                             {cell}
                           </td>
@@ -120,7 +124,7 @@ const MyPage = () => {
                         return (
                           <td
                             key={cellIndex}
-                            className="border border-gray-300 px-4 py-2 bg-green-500"
+                            className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-xs sm:text-sm"
                           >
                             {cell}
                           </td>
@@ -129,7 +133,7 @@ const MyPage = () => {
                         return (
                           <td
                             key={cellIndex}
-                            className="border border-gray-300 px-4 py-2 bg-red-500"
+                            className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 bg-red-500 text-xs sm:text-sm"
                           >
                             {cell}
                           </td>
@@ -137,7 +141,10 @@ const MyPage = () => {
                       }
                     }
                     return (
-                      <td key={cellIndex} className="border border-gray-300 px-4 py-2">
+                      <td
+                        key={cellIndex}
+                        className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm"
+                      >
                         {cell}
                       </td>
                     );
@@ -147,7 +154,7 @@ const MyPage = () => {
             </tbody>
           </table>
         ) : (
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-gray-500 text-sm sm:text-base">Loading...</p>
         )}
       </div>
     </div>
