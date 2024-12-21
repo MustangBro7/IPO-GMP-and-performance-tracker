@@ -20,8 +20,8 @@ func upcominghandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(rows)
 	w.Header().Set("Access-Control-Allow-Origin", "*") // Allow requests only from your React app
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS") // Allow specific methods
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")       // Allow specific headers
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")                       // Allow specific methods
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, ngrok-skip-browser-warning") // Allow specific headers
 
 	data := map[string]interface{}{
 		"headers": headers,
@@ -79,11 +79,28 @@ func smeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, ngrok-skip-browser-warning")
+
+		// Handle preflight requests
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	// Set up the route
-	http.HandleFunc("/data", upcominghandler)
-	http.HandleFunc("/main", mainHandler)
-	http.HandleFunc("/sme", smeHandler)
+	http.Handle("/data", corsMiddleware(http.HandlerFunc(upcominghandler)))
+	http.Handle("/main", corsMiddleware(http.HandlerFunc(mainHandler)))
+	http.Handle("/sme", corsMiddleware(http.HandlerFunc(smeHandler)))
+
 	// Start the server
 	port := 8080
 	fmt.Printf("Server is running on http://0.0.0.0:%d\n", port)
