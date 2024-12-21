@@ -23,7 +23,12 @@ const MyPage = () => {
   const fetchData = async () => {
     setLoading(true); // Start loading
     try {
-      const response = await fetch("http://0.0.0.0:8080/sme");
+      const response = await fetch("https://d959-103-215-237-172.ngrok-free.app/sme",{
+        method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
