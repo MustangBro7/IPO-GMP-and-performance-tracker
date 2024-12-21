@@ -21,9 +21,10 @@ const MyPage = () => {
   const [loading, setLoading] = useState(false); // Added loading state
 
   const fetchData = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     setLoading(true); // Start loading
     try {
-      const response = await fetch("https://d959-103-215-237-172.ngrok-free.app/data",{
+      const response = await fetch(`${apiUrl}/data`,{
         method: "GET",
         headers: {
           "ngrok-skip-browser-warning": "true",
