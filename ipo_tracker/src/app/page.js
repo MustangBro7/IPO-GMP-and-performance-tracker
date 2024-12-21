@@ -22,6 +22,7 @@ const MyPage = () => {
 
   const fetchData = async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log(apiUrl)
     setLoading(true); // Start loading
     try {
       const response = await fetch(`${apiUrl}/data`,{
