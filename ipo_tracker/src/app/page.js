@@ -58,21 +58,21 @@ const MyPage = () => {
         <Link href="/">
           <button 
           // onClick={loadingFunc}
-          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600 outline rounded-b-none  outline-1">
+          className="px-4 py-2 bg-black-500  rounded hover:bg-gray-600 outline rounded-b-none  outline-1">
           <h1 className="text-2xl font-bold mb-4">Upcoming IPO Table</h1>
           </button>
         </Link>
         <Link href="/main">
           <button 
           onClick={loadingFunc}
-          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600">
+          className="px-4 py-2 bg-black-500  rounded hover:bg-gray-600">
           <h1 className="text-2xl font-bold mb-4">Main</h1>
           </button>
         </Link>
         <Link href="/sme">
           <button 
           onClick={loadingFunc}
-          className="px-4 py-2 bg-black-500 text-white rounded hover:bg-gray-600">
+          className="px-4 py-2 bg-black-500  rounded hover:bg-gray-600">
           <h1 className="text-2xl font-bold mb-4 ">SME</h1>
           </button>
         </Link>
