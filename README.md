@@ -3,6 +3,8 @@
 
 IPO Tracker CLI is a command-line tool designed to fetch and display IPO-related data, including upcoming IPOs, current GMPs, and historical performance. The project uses Python scripts for data fetching and a Go-based CLI for interaction.
 
+### If you prefer a web interface visit: https://ipo-gmp-and-performance-tracker.vercel.app/
+
 ## Features
 - Fetch upcoming IPO data
 - Track performance of recently listed Mainboard IPOs
